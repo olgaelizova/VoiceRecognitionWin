@@ -7,6 +7,9 @@
 class MainMenuSection :
 	public CommonSection
 {
+
+protected:
+	void InitDropdown();
 public:
 	MainMenuSection();
 	~MainMenuSection();
