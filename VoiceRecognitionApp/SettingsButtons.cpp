@@ -1,12 +1,11 @@
 #include "stdafx.h"
-#include "MainMenuSection.h"
+#include "SettingsButtons.h"
+#include "GetInputParameters.h"
 #include <windowsx.h>
-
 
 MainMenuSection::MainMenuSection()
 {
 }
-
 
 MainMenuSection::~MainMenuSection()
 {
@@ -14,6 +13,7 @@ MainMenuSection::~MainMenuSection()
 
 void MainMenuSection::Init(HWND parent, int visualAttr, HINSTANCE inst)
 {
+	// TO DO: other fields for parameters
 	InitControlPackageSize(4);
 	InitCommonControlParams(parent, visualAttr, inst);
 
@@ -23,7 +23,8 @@ void MainMenuSection::Init(HWND parent, int visualAttr, HINSTANCE inst)
 	AddControl("ComboBox", "", 50, 20, 200, 200);
 
 	mCommonControlParams = copy;
-	AddControl("Button", "Recognize", 20, 230, 220, 50);
+	AddControl("Button", "Save", 460, 330, 100, 50);
+	AddControl("Button", "Close", 460, 450, 100, 50);
 
 	InitDropdown();
 }
@@ -56,7 +57,7 @@ void MainMenuSection::InitDropdown()
 
 	TCHAR Hamming[2][17] =
 	{
-		TEXT("Hamming Window"), TEXT("Some other stuff")
+		TEXT("hann"), TEXT("hamming")
 	};
 
 	memset(&A, 0, sizeof(A));
@@ -84,21 +85,38 @@ int MainMenuSection::ProcessMsg(WPARAM wParam, LPARAM lParam)
 		// check if the notification came from this section's control
 		if (mControlPack[i].mControl == (HWND)lParam)
 		{
-
+			char freq;
 			switch ( HIWORD(wParam) )
 			{
 				// button clicked
 			case BN_CLICKED:
-				//SendMessage(mControlPack[0].mParent, WM_COMMAND, MAKEWPARAM(0, EM_GETLINE), (LPARAM)mControlPack[0].mControl);
-				//char * text = new char[23];
-				//Edit_GetLine(mControlPack[0].mControl, 0, LPTSTR(text), 23);
-
-				break;
-
+				if (mControlPack[2].mControl == (HWND)lParam)
+				{
+					Edit_GetLine(mControlPack[0].mControl, 0, LPTSTR(&freq), 1);
+					switch (freq)
+					{
+					case '1':
+						getParams.Frequency = 11025;
+						break;
+					case '2':
+						getParams.Frequency = 22050;
+						break;
+					case '4':
+						getParams.Frequency = 44100;
+						break;
+					}
+					Edit_GetLine(mControlPack[1].mControl, 0, LPTSTR(getParams.FreqType), 23);
+					return 1;
+					break;
+				}
+				else
+					if (mControlPack[3].mControl == (HWND)lParam)
+					{
+						return 1;
+					}
 			}
 		}
 	}
 
-	return 1;
-	//return result;
+	return 0;
 }

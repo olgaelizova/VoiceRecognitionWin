@@ -5,10 +5,11 @@
 #ifdef _WIN32
 
 #include "VoiceRecognitionApp.h"
-
+#include "GetInputParameters.h"
 #include "MainButtons.h"
 #include "Recognition.h"
-#include "MainMenuSection.h"
+
+#include "Settings.h"
 
 #define MAX_LOADSTRING 100
 
@@ -25,8 +26,9 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 MainButtons mainButtons;
 VoiceRecognition recognition;
-MainMenuSection		mainMenu;
+extern Settings settings;
 
+GetInputParameters getParams;
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -41,6 +43,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_VOICERECOGNITIONAPP, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
+
+	settings.SettingsClass(hInstance);
 
 	// ¬ыполнить инициализацию приложени€:
 	if (!InitInstance(hInstance, nCmdShow))
@@ -127,8 +131,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		return FALSE;
 	}
 
-	mainMenu.Init(hWnd, WS_VISIBLE | WS_CHILD | ES_LEFT |
-		1, hInst);
+	settings.init(hInstance, szWindowClass, hWnd);
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
@@ -161,7 +164,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	//	if (mainButtons.ProcessMsg(wmId) == 0)
 
-		if (mainMenu.ProcessMsg(wParam, lParam) == 0)
+//		if (mainMenu.ProcessMsg(wParam, lParam) == 0)  ????
 
 			switch (wmId)
 		{
@@ -171,14 +174,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			case IDM_SETTINGS:
 				//TODO:
-
+				settings.Show();
 				break;
 
 			case IDM_EXIT:
 				DestroyWindow(hWnd);
 				break;
-
-
 
 			default:
 				return DefWindowProc(hWnd, message, wParam, lParam);
