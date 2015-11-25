@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "MainButtons.h"
-
 #include "Recognition.h"
 
 MainButtons::MainButtons()
@@ -14,10 +13,10 @@ MainButtons::~MainButtons()
 
 void MainButtons::initButtons(LPARAM lParam)
 {
-	buttonCreateEtalon = CreateWindow(TEXT("button"), "Create Etalon", WS_VISIBLE | WS_CHILD | ES_LEFT |
+	buttonCreateEtalon = CreateWindowA("button", "Create Etalon", WS_VISIBLE | WS_CHILD | ES_LEFT |
 		1, 300, 185, 200, 50, hwnd, (HMENU)EH_CREATEETALON, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 
-	buttonRecognize = CreateWindow(TEXT("button"), "Recognize Voice", WS_VISIBLE | WS_CHILD | ES_LEFT |
+	buttonRecognize = CreateWindowA("button", "Recognize Voice", WS_VISIBLE | WS_CHILD | ES_LEFT |
 		1, 300, 255, 200, 50, hwnd, (HMENU)EH_RECOGNIZE, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 	
 }
@@ -44,8 +43,8 @@ int MainButtons::ProcessMsg(int msg)
 
 int MainButtons::CreateEtalon()
 {
-	//ShowWindow(buttonCreateEtalon, 0);
-	//ShowWindow(buttonRecognize, 1);
+	ShowWindow(buttonCreateEtalon, 1);
+	ShowWindow(buttonRecognize, 0);
 	ShowWindow(buttonCreateEtalon, 0);
 
 	return 1;
@@ -53,8 +52,8 @@ int MainButtons::CreateEtalon()
 
 int MainButtons::RecognizeSound()
 {
-	//ShowWindow(buttonRecognize, 0);
-	//ShowWindow(buttonCreateEtalon, 1);
+	ShowWindow(buttonRecognize, 1);
+	ShowWindow(buttonCreateEtalon, 0);
 	ShowWindow(buttonRecognize, 0);
 
 	recognition->newWindow();

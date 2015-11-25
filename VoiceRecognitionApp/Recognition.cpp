@@ -13,13 +13,11 @@ VoiceRecognition::~VoiceRecognition()
 
 void VoiceRecognition::initWindow(LPARAM lParam)
 {
+	buttonRecognizeWritedVoice = CreateWindowA("button", "Write voice for recognition", WS_VISIBLE | WS_CHILD | ES_LEFT |
+		1, 300, 185, 300, 50, hwnd, (HMENU)EH_RECOGNIZEWRITEVOICE, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 
-
-	buttonRecognizeWritedVoice = CreateWindow(TEXT("button"), "Write voice for recognition", WS_VISIBLE | WS_CHILD | ES_LEFT |
-		1, 300, 185, 200, 100, hwnd, (HMENU)EH_RECOGNIZEWRITEVOICE, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
-
-	buttonRecognizeWAV = CreateWindow(TEXT("button"), "Recognize voice from WAV file", WS_VISIBLE | WS_CHILD | ES_LEFT |
-		1, 300, 255, 200, 100, hwnd, (HMENU)EH_RECOGNIZEWAV, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
+	buttonRecognizeWAV = CreateWindowA("button", "Recognize voice from WAV file", WS_VISIBLE | WS_CHILD | ES_LEFT |
+		1, 300, 255, 300, 50, hwnd, (HMENU)EH_RECOGNIZEWAV, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 
 	ShowWindow(buttonRecognizeWritedVoice, 0);
 	ShowWindow(buttonRecognizeWAV, 0);
@@ -30,15 +28,6 @@ int VoiceRecognition::ProcessMsg(int msg)
 {
 	switch (msg)
 	{
-
-	case EH_TABCONTROL1:
-		return tabCtrl1Click();
-		break;
-
-	case EH_TABCONTROL2:
-		return tabCtrl2Click();
-		break;
-
 	case EH_RECOGNIZEWRITEVOICE:
 		return RecognizeWritedVoice();
 		break;
@@ -52,43 +41,29 @@ int VoiceRecognition::ProcessMsg(int msg)
 	}
 }
 
-int VoiceRecognition::tabCtrl1Click()
-{
-	RecognizeWritedVoice();
-	return 1;
-}
-
-int VoiceRecognition::tabCtrl2Click()
-{
-	RecognizeWAV();
-	return 1;
-}
-
-
 int VoiceRecognition::newWindow()
 {
-	//ShowWindow(hThisWnd,1);
-	ShowWindow(hTabCtrl, 1);
-	ShowWindow(hTabCtrl2, 1);
-
-	//RecognizeWritedVoice();
-	//RecognizeWAV();
-
+	ShowWindow(buttonRecognizeWritedVoice, 1);
+	ShowWindow(buttonRecognizeWAV, 1);
 	return 1;
 }
 
 int VoiceRecognition::RecognizeWritedVoice()
 {
-	ShowWindow(buttonRecognizeWritedVoice, 1);
+	ShowWindow(buttonRecognizeWritedVoice, 0);
 	ShowWindow(buttonRecognizeWAV, 0);
+
+	voicewrite->newWindow();
 
 	return 1;
 }
 
 int VoiceRecognition::RecognizeWAV()
 {
-	ShowWindow(buttonRecognizeWAV, 1);
+	ShowWindow(buttonRecognizeWAV, 0);
 	ShowWindow(buttonRecognizeWritedVoice, 0);
+
+	wavrec->newWindow();
 
 	return 1;
 }

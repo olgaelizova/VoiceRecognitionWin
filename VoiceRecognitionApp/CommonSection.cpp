@@ -39,7 +39,7 @@ void CommonSection::AddControl(char * mCtrlClass, char* caption, int top, int le
 	mControlPack[mControlCount].bottom		= bottom;
 
 	// window creation
-	mControlPack[mControlCount].mControl = CreateWindow(mCtrlClass, caption, mCommonControlParams.visualAttr,
+	mControlPack[mControlCount].mControl = CreateWindowA(mCtrlClass, caption, mCommonControlParams.visualAttr,
 		left, top, right, bottom, mCommonControlParams.mParent, NULL, mCommonControlParams.mInst, NULL);
 
 	// increment for size

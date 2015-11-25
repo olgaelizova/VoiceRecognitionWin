@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -28,6 +36,13 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -50,8 +65,9 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\VR_unix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -80,25 +96,63 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonSection.h" />
+    <ClInclude Include="GetInputParameters.h" />
     <ClInclude Include="MainButtons.h" />
-    <ClInclude Include="MainMenuSection.h" />
+    <ClInclude Include="SettingsButtons.h" />
     <ClInclude Include="Recognition.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VoiceRecognitionApp.h" />
+    <ClInclude Include="VoiceWriteRecognition.h" />
+    <ClInclude Include="VR_unix\FFTAnalysis.h" />
+    <ClInclude Include="VR_unix\FileUtils.h" />
+    <ClInclude Include="VR_unix\FindingMaxKoef.h" />
+    <ClInclude Include="VR_unix\FolderFiles.h" />
+    <ClInclude Include="VR_unix\InputParameters.h" />
+    <ClInclude Include="VR_unix\MatlabFunctions.h" />
+    <ClInclude Include="VR_unix\MatrixTransform.h" />
+    <ClInclude Include="VR_unix\PushButtonHandler.h" />
+    <ClInclude Include="VR_unix\ReadEtalons.h" />
+    <ClInclude Include="VR_unix\RegrKoefAnalysis.h" />
+    <ClInclude Include="VR_unix\SpectrumAnalysis.h" />
+    <ClInclude Include="VR_unix\SpectrumTypeTransf.h" />
+    <ClInclude Include="VR_unix\VectorTransform.h" />
+    <ClInclude Include="VR_unix\VoiceWrite.h" />
+    <ClInclude Include="VR_unix\WavReader.h" />
+    <ClInclude Include="WAVRecognition.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonSection.cpp" />
+    <ClCompile Include="GetInputParameters.cpp" />
     <ClCompile Include="MainButtons.cpp" />
-    <ClCompile Include="MainMenuSection.cpp" />
+    <ClCompile Include="SettingsButtons.cpp" />
     <ClCompile Include="Recognition.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="VoiceRecognitionApp.cpp" />
+    <ClCompile Include="VoiceWriteRecognition.cpp" />
+    <ClCompile Include="VR_unix\FFTAnalysis.cpp" />
+    <ClCompile Include="VR_unix\FileUtils.cpp" />
+    <ClCompile Include="VR_unix\FindingMaxKoef.cpp" />
+    <ClCompile Include="VR_unix\FolderFiles.cpp" />
+    <ClCompile Include="VR_unix\InputParameters.cpp" />
+    <ClCompile Include="VR_unix\MatlabFunctions.cpp" />
+    <ClCompile Include="VR_unix\MatrixTransform.cpp" />
+    <ClCompile Include="VR_unix\PushButtonHandler.cpp" />
+    <ClCompile Include="VR_unix\ReadEtalons.cpp" />
+    <ClCompile Include="VR_unix\RegrKoefAnalysis.cpp" />
+    <ClCompile Include="VR_unix\SpectrumAnalysis.cpp" />
+    <ClCompile Include="VR_unix\SpectrumTypeTransf.cpp" />
+    <ClCompile Include="VR_unix\VectorTransform.cpp" />
+    <ClCompile Include="VR_unix\VoiceWrite.cpp" />
+    <ClCompile Include="VR_unix\WavReader.cpp" />
+    <ClCompile Include="WAVRecognition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

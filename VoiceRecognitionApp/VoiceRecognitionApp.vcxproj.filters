@@ -13,11 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Заголовочные файлы\Sections">
+    <Filter Include="Заголовочные файлы\VR_unix">
       <UniqueIdentifier>{715644e9-17ee-4d04-b25d-f78890e9e183}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Файлы исходного кода\Sections">
+    <Filter Include="Файлы исходного кода\VR_unix">
       <UniqueIdentifier>{677e89ea-b294-41df-a448-31a637bf17cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\VR_win">
+      <UniqueIdentifier>{c24f9069-6993-4e3d-b201-e4522c4b455a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\VR_win">
+      <UniqueIdentifier>{77bb2cff-ed15-4d56-86c2-9aa0e21102ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,25 +36,82 @@
     <ClInclude Include="targetver.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="VoiceRecognitionApp.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Recognition.h">
-      <Filter>Заголовочные файлы</Filter>
+    <ClInclude Include="VR_unix\FFTAnalysis.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
     </ClInclude>
-    <ClInclude Include="MainButtons.h">
-      <Filter>Заголовочные файлы</Filter>
+    <ClInclude Include="VR_unix\FileUtils.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Заголовочные файлы</Filter>
+    <ClInclude Include="VR_unix\FindingMaxKoef.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\FolderFiles.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\InputParameters.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\MatlabFunctions.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\MatrixTransform.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\PushButtonHandler.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\ReadEtalons.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\RegrKoefAnalysis.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\SpectrumAnalysis.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\SpectrumTypeTransf.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\VectorTransform.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\VoiceWrite.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
+    </ClInclude>
+    <ClInclude Include="VR_unix\WavReader.h">
+      <Filter>Заголовочные файлы\VR_unix</Filter>
     </ClInclude>
     <ClInclude Include="CommonSection.h">
-      <Filter>Заголовочные файлы</Filter>
+      <Filter>Заголовочные файлы\VR_win</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuSection.h">
+    <ClInclude Include="GetInputParameters.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="MainButtons.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="Recognition.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsButtons.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="VoiceWriteRecognition.h">
+      <Filter>Заголовочные файлы\VR_win</Filter>
+    </ClInclude>
+    <ClInclude Include="WAVRecognition.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,16 +122,73 @@
     <ClCompile Include="VoiceRecognitionApp.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="MainButtons.cpp">
-      <Filter>Файлы исходного кода</Filter>
+    <ClCompile Include="VR_unix\WavReader.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
     </ClCompile>
-    <ClCompile Include="Recognition.cpp">
-      <Filter>Файлы исходного кода</Filter>
+    <ClCompile Include="VR_unix\VoiceWrite.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\VectorTransform.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\SpectrumTypeTransf.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\SpectrumAnalysis.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\RegrKoefAnalysis.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\ReadEtalons.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\PushButtonHandler.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\MatrixTransform.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\MatlabFunctions.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\InputParameters.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\FolderFiles.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\FindingMaxKoef.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\FileUtils.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
+    </ClCompile>
+    <ClCompile Include="VR_unix\FFTAnalysis.cpp">
+      <Filter>Файлы исходного кода\VR_unix</Filter>
     </ClCompile>
     <ClCompile Include="CommonSection.cpp">
-      <Filter>Файлы исходного кода</Filter>
+      <Filter>Файлы исходного кода\VR_win</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenuSection.cpp">
+    <ClCompile Include="GetInputParameters.cpp">
+      <Filter>Файлы исходного кода\VR_win</Filter>
+    </ClCompile>
+    <ClCompile Include="MainButtons.cpp">
+      <Filter>Файлы исходного кода\VR_win</Filter>
+    </ClCompile>
+    <ClCompile Include="Recognition.cpp">
+      <Filter>Файлы исходного кода\VR_win</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Файлы исходного кода\VR_win</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsButtons.cpp">
+      <Filter>Файлы исходного кода\VR_win</Filter>
+    </ClCompile>
+    <ClCompile Include="VoiceWriteRecognition.cpp">
+      <Filter>Файлы исходного кода\VR_win</Filter>
+    </ClCompile>
+    <ClCompile Include="WAVRecognition.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>

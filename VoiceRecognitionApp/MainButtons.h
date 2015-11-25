@@ -27,11 +27,11 @@ public:
 	}
 
 	void initButtons(LPARAM );
+
 	void initRecognitionTab(VoiceRecognition * rec)
 	{
 		this->recognition = rec;
 	}
-	void showFrame(bool show);
 
 	int RecognizeSound();
 	int CreateEtalon();
