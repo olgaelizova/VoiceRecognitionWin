@@ -40,7 +40,7 @@ public:
 
 #include "InputParameters.h"
 
-#include "FindingMaxKoef.h"
+//#include "FindingMaxKoef.h"
 
 #include "PushButtonHandler.h"
 

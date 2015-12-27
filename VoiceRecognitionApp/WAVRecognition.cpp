@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WAVRecognition.h"
-
+#include "FindingMaxKoef.h"
 
 WAVRecognition::WAVRecognition()
 {
@@ -13,17 +13,8 @@ WAVRecognition::~WAVRecognition()
 
 void WAVRecognition::initWindow(LPARAM lParam)
 {
-	//buttonRecognizeWritedVoice = CreateWindowA("button", "Write voice for recognition", WS_VISIBLE | WS_CHILD | ES_LEFT |
-	//	1, 300, 185, 300, 50, hwnd, (HMENU)EH_RECOGNIZEWRITEVOICE, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
-
-	//buttonRecognizeWAV = CreateWindowA("button", "Recognize voice from WAV file", WS_VISIBLE | WS_CHILD | ES_LEFT |
-	//	1, 300, 255, 300, 50, hwnd, (HMENU)EH_RECOGNIZEWAV, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
-
-	//ShowWindow(buttonRecognizeWritedVoice, 0);
-	//ShowWindow(buttonRecognizeWAV, 0);
-
-	result = CreateWindowA("static", "", WS_VISIBLE | WS_CHILD | ES_LEFT |
-			1, 300, 255, 300, 50, hwnd, (HMENU)EH_RESULT, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
+	result = CreateWindowA("ListBox", "Recognition Results", WS_VISIBLE | WS_CHILD | ES_LEFT |
+			1, 100, 100, 600, 300, hwnd, (HMENU)EH_RESULT, ((LPCREATESTRUCT)lParam)->hInstance, NULL); 
 
 	ShowWindow(result, 0);
 
@@ -45,12 +36,12 @@ int WAVRecognition::newWindow()
 {
 	ShowWindow(result, 1);
 	showResult(result);
-
 	return 1;
 }
 
 int showResult(HWND result)
 {
+	//double maxResult = 0;
 		///// flag for button handler 
 		int flag = 0;
 		/////
@@ -101,12 +92,14 @@ int showResult(HWND result)
 
 			//cout << "Start computing... " << endl << endl;
 
+			char* txtOut = 0;
+
 			for (int i = 0; i < wavfilescounter; i++) // i=0
 			{
 				strpath = folderpath + wavfiles[i];
 				const char* fullpath = strpath.c_str();
 
-				SetWindowText(result, TEXT("Control string"));
+				//SetWindowText(result, TEXT("Control string"));
 
 				//cout << "Wav-file is: " << wavfiles[i] << endl << endl;
 
@@ -153,7 +146,19 @@ int showResult(HWND result)
 					///
 				}
 
-				maxKoef(etalons, koeffs, efilescounter);
+				//TODO: return char from function
+
+				//maxResult = maxKoef(etalons, koeffs, efilescounter);
+
+				txtOut = maxKoef(etalons, koeffs, efilescounter, wavfiles[i], txtOut);
+
+				//sprintf(txtOut, "%f", maxResult); // convert double to char
+				//char out[5] = "test";
+
+				SendMessage(result, LB_ADDSTRING, 0, (LPARAM)(LPSTR)txtOut); //set strings into listbox
+				//SendMessage(result, LB_ADDSTRING, 0, (LPARAM)(LPSTR)out); //set strings into listbox
+
+				//SetWindowText(result, txtOut);
 				//cout << endl;
 
 				/////// ochistka pamyaty

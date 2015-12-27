@@ -109,6 +109,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
+
+
 	HWND hWnd;
 
 	hInst = hInstance; // —охранить дескриптор экземпл€ра в глобальной переменной
@@ -160,6 +162,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	bool stop = true;
 
+	// DEBUG a
+	unsigned short a;
+
+
 	switch (message)
 	{
 		/*messages for writing voice*/
@@ -200,6 +206,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CopyMemory(voicewrite.pSaveBuffer + voicewrite.dwDataLength, ((PWAVEHDR)lParam)->lpData,
 			((PWAVEHDR)lParam)->dwBytesRecorded);
 
+		voicewrite.currentSaveBufferPos += voicewrite.dwDataLength;
+
 		voicewrite.dwDataLength += ((PWAVEHDR)lParam)->dwBytesRecorded;
 
 		if (voicewrite.bEnding)
@@ -207,10 +215,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			waveInClose(voicewrite.hWaveIn);
 			return TRUE;
 		}
-
 		// Send out a new buffer
 
+
 		waveInAddBuffer(voicewrite.hWaveIn, (PWAVEHDR)lParam, sizeof(WAVEHDR));
+
+		voicewrite.parseSoundPiece();
+
+		RECT rc;
+		GetClientRect(hWnd, &rc);
+		InvalidateRect(hWnd, &rc, TRUE);
+
 		return TRUE;
 
 	case MM_WIM_CLOSE:
@@ -306,7 +321,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 	case WM_PAINT:
-		if (voicewrite.PLAY == FALSE)
+
+		if (voicewrite.PLAY == FALSE && voicewrite.isBeingRecorded == FALSE && voicewrite.blackScreenAvailable)
+		{
+			hdc = BeginPaint(hWnd, &ps);
+			// TODO: добавьте любой код отрисовки...
+			RECT rc;
+			rc.top = 15;
+			rc.left = 0;
+			rc.bottom = 400;
+			rc.right = 800;
+			FillRect(hdc, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+			DeleteDC(hdc);
+			EndPaint(hWnd, &ps);
+		}
+
+		else if (voicewrite.PLAY == FALSE && voicewrite.isBeingRecorded == FALSE )
 		{
 			hdc = BeginPaint(hWnd, &ps);
 			// TODO: добавьте любой код отрисовки...
@@ -318,7 +348,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PAINTSTRUCT 	ps;
 
 			voicewrite.hDC = BeginPaint(voicewrite.hwnd, &ps);
-
+		
 			if (voicewrite.hDC)
 			{
 				RECT rc;
@@ -327,10 +357,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				rc.bottom = 400;
 				rc.right = 800;
 				FillRect(voicewrite.hDC, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+				
 				if (voicewrite.PLAY == TRUE)
 				{
 					FillRect(voicewrite.hDC, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
-					voicewrite.Wav("temp.wav");
+					voicewrite.hPen = CreatePen(PS_SOLID, 1, RGB(0, 200, 0));
+					SelectObject(voicewrite.hDC, voicewrite.hPen);
+
+					SetMapMode(voicewrite.hDC, MM_ISOTROPIC);
+					SetWindowExtEx(voicewrite.hDC, 430, 315, NULL);
+					SetViewportExtEx(voicewrite.hDC, 200, 200, NULL);
+					SetViewportOrgEx(voicewrite.hDC, 0, 0, NULL);
+
+					MoveToEx(voicewrite.hDC, 0, 200, NULL);
+
+					// first draw existing points
+					//if ( voicewrite.currentPicturePoint < 200)
+					for (int i = 0; i < voicewrite.currentPicturePoint; i++)
+					{
+						LineTo(voicewrite.hDC, voicewrite.ptRecord[i].x, voicewrite.ptRecord[i].y);
+					}
+
+				}
+
+				/*
+
+				if (voicewrite.PLAY == TRUE)
+				{
+					FillRect(voicewrite.hDC, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+					voicewrite.Wav("stopTemp.wav");
 					voicewrite.hPen = CreatePen(PS_SOLID, 1, RGB(0, 200, 0));
 					SelectObject(voicewrite.hDC, voicewrite.hPen);
 
@@ -346,14 +402,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					// scale the sample
 
 					voicewrite.pt[i].x = i / 20;
-					voicewrite.pt[i].y = (int)((sample)* 2)+100;
+					voicewrite.pt[i].y = (int)((sample)* 2) + 100;
 					MoveToEx(voicewrite.hDC, voicewrite.pt[i].x, voicewrite.pt[i].y, NULL);
 					while (i < num && sample != (int)0xefffffff)
 					{
 						// scale the sample
 
 						voicewrite.pt[i].x = i / 20;
-						voicewrite.pt[i].y = (int)((sample)* 2)+100;
+						voicewrite.pt[i].y = (int)((sample)* 2) + 100;
 
 						LineTo(voicewrite.hDC, voicewrite.pt[i].x, voicewrite.pt[i].y);
 						i++;
@@ -361,12 +417,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					}
 				}
+
+				*/
+				
 				DeleteObject(voicewrite.hPen);
 				DeleteDC(voicewrite.hDC);
 				EndPaint(voicewrite.hwnd, &ps);
 			}
 			return 0;
 		}
+
+
+		// 1 == 0 never true
+		else if (voicewrite.isBeingRecorded == TRUE )
+		{
+
+			PAINTSTRUCT 	ps;
+
+			voicewrite.hDC = BeginPaint(voicewrite.hwnd, &ps);
+
+			if (voicewrite.hDC)
+			{
+				RECT rc;
+				rc.top = 15;
+				rc.left = 0;
+				rc.bottom = 400;
+				rc.right = 800;
+				FillRect(voicewrite.hDC, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+				//if (voicewrite.PLAY == TRUE)
+				{
+					FillRect(voicewrite.hDC, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+					voicewrite.hPen = CreatePen(PS_SOLID, 1, RGB(0, 200, 0));
+					SelectObject(voicewrite.hDC, voicewrite.hPen);
+
+					SetMapMode(voicewrite.hDC, MM_ISOTROPIC);
+					SetWindowExtEx(voicewrite.hDC, 430, 315, NULL);
+					SetViewportExtEx(voicewrite.hDC, 200, 200, NULL);
+					SetViewportOrgEx(voicewrite.hDC, 0, 0, NULL);
+
+					MoveToEx(voicewrite.hDC, 0, 200, NULL);
+
+					// first draw existing points
+					//if ( voicewrite.currentPicturePoint < 200)
+					for (int i = 0; i < voicewrite.currentPicturePoint; i++)
+					{
+						LineTo(voicewrite.hDC, voicewrite.ptRecord[i].x, voicewrite.ptRecord[i].y);
+					}
+
+
+				}
+				DeleteObject(voicewrite.hPen);
+				DeleteDC(voicewrite.hDC);
+				EndPaint(voicewrite.hwnd, &ps);
+			}
+			return 0;
+
+		}
+
 		/*end of voice record*/
 		break;
 

@@ -2,7 +2,7 @@
 #include "VoiceWriteRecognition.h"
 
 
-VoiceWriteRecognition::VoiceWriteRecognition()
+VoiceWriteRecognition::VoiceWriteRecognition() : spw(1024), currentPicturePoint(0), currentSaveBufferPos(0), blackScreenAvailable(false)
 {
 }
 
@@ -154,6 +154,16 @@ int VoiceWriteRecognition::Record()
 
 	waveInPrepareHeader(hWaveIn, pWaveHdr2, sizeof(WAVEHDR));
 
+	isBeingRecorded = TRUE;
+	PLAY = false;
+	blackScreenAvailable = true;
+
+	RECT rc;
+	GetClientRect(hwnd, &rc);
+	InvalidateRect(hwnd, &rc, TRUE);
+
+	ResetPictureBuffer();
+
 	return 1;
 }
 
@@ -206,7 +216,27 @@ int VoiceWriteRecognition::Stop()
 
 	myFile.write(pWaveHdr1->lpData, pWaveHdr1->dwBufferLength);	// data
 
+	isBeingRecorded = FALSE;
+	PLAY = FALSE;
+
+	//RECT rc;
+	//GetClientRect(hwnd, &rc);
+	//InvalidateRect(hwnd, &rc, TRUE);
+
+	StopTempSave();
+	
 	return 1;
+}
+
+void VoiceWriteRecognition::ResetPictureBuffer()
+{
+	for (int i = 0; i < currentPicturePoint; i++)
+	{
+		ptRecord[i].x = 0;
+		ptRecord[i].y= 0;
+	}
+
+	currentPicturePoint = 0;
 }
 
 int VoiceWriteRecognition::Play()
@@ -235,13 +265,67 @@ int VoiceWriteRecognition::Play()
 		//	MB_ICONEXCLAMATION | MB_OK);
 	}
 
-	Wav("temp.wav");
+	Wav("stopTemp.wav");
 	// Open waveform audio for output
 
 	RECT rc;
 	GetClientRect(hwnd, &rc);
 	PLAY = TRUE;
 	InvalidateRect(hwnd, &rc, TRUE);
+
+	return 1;
+}
+
+int VoiceWriteRecognition::StopTempSave()
+{
+	int chunksize, pcmsize, NumSamples, subchunk1size;
+	int audioFormat = 1;
+	int numChannels = 1;
+	int bitsPerSample = BYTERATE;
+
+	NumSamples = ((long)(NUMPTS / sampleRate) * 1000);
+	pcmsize = sizeof(PCMWAVEFORMAT);
+
+	;
+	subchunk1size = 16;
+	int byteRate = sampleRate*numChannels*bitsPerSample / 8;
+	int blockAlign = numChannels*bitsPerSample / 8;
+	int subchunk2size = pWaveHdr1->dwBufferLength*numChannels;
+
+	chunksize = (36 + subchunk2size);
+	fstream myFile("stopTemp.wav", ios::out | ios::binary);
+
+	// write the wav file per the wav file format
+	myFile.seekp(0, ios::beg);
+	myFile.write("RIFF", 4);					// chunk id
+	myFile.write((char*)&chunksize, 4);	        	// chunk size (36 + SubChunk2Size))
+	myFile.write("WAVE", 4);					// format
+	myFile.write("fmt ", 4);					// subchunk1ID
+	myFile.write((char*)&subchunk1size, 4);			// subchunk1size (16 for PCM)
+	myFile.write((char*)&audioFormat, 2);			// AudioFormat (1 for PCM)
+	myFile.write((char*)&numChannels, 2);			// NumChannels
+	myFile.write((char*)&sampleRate, 4);			// sample rate
+	myFile.write((char*)&byteRate, 4);			// byte rate (SampleRate * NumChannels * BitsPerSample/8)
+	myFile.write((char*)&blockAlign, 2);			// block align (NumChannels * BitsPerSample/8)
+	myFile.write((char*)&bitsPerSample, 2);			// bits per sample
+	myFile.write("data", 4);					// subchunk2ID
+	myFile.write((char*)&subchunk2size, 4);			// subchunk2size (NumSamples * NumChannels * BitsPerSample/8)
+
+	//myFile.write(pWaveHdr1->lpData, pWaveHdr1->dwBufferLength);	// data
+	myFile.write(reinterpret_cast<const char*>(pSaveBuffer), dwDataLength);
+
+	myFile.close();
+
+	//TO DO: Realize buffer for automatic recognition
+
+	/*	unsigned int* buf = new unsigned int[10];
+	fstream myFile2("test.wav", ios::in | ios::binary);
+	myFile2.seekp(45, ios::beg);
+	myFile2.read((char*)buf, 80);
+	// myFile2.close();
+
+	double bbuf = ((double)(short)buf) / 32768;
+	*/
 
 	return 1;
 }
@@ -282,7 +366,8 @@ int VoiceWriteRecognition::Save()
 	myFile.write("data", 4);					// subchunk2ID
 	myFile.write((char*)&subchunk2size, 4);			// subchunk2size (NumSamples * NumChannels * BitsPerSample/8)
 
-	myFile.write(pWaveHdr1->lpData, pWaveHdr1->dwBufferLength);	// data
+	//myFile.write(pWaveHdr1->lpData, pWaveHdr1->dwBufferLength);	// data
+	myFile.write(reinterpret_cast<const char*>(pSaveBuffer), dwDataLength);
 
 	myFile.close();
 
@@ -376,6 +461,42 @@ void VoiceWriteRecognition::Wav(char *c)
 	}
 }
 
+int VoiceWriteRecognition::readSampleFromBuffer(int number, bool leftchannel)
+{
+	/*
+	Reads sample number, returns it as an int, if
+	this.mono==false we look at the leftchannel bool
+	to determine which to return.
+
+	number is in the range [0,length/byte_samp]
+
+	returns 0xefffffff on failure
+	*/
+
+	if (number >= 0 && number < dwDataLength )
+	{
+
+		// unless this is a stereo file and the rightchannel is requested.
+		//if (!mono && !leftchannel)
+		//{
+		// offset += byte_samp/2;
+		//  }
+
+		// read this many bytes;
+		int amount;
+		amount = byte_samp;
+
+		short sample = pSaveBuffer[number];
+
+		return sample;
+	}
+	else
+	{
+		// return 0xefffffff if failed
+		return (int)0xefffffff;
+	}
+}
+
 int VoiceWriteRecognition::readSample(int number, bool leftchannel)
 {
 	/*
@@ -388,7 +509,7 @@ int VoiceWriteRecognition::readSample(int number, bool leftchannel)
 	returns 0xefffffff on failure
 	*/
 
-	if (number >= 0 && number<length / byte_samp)
+	if (number >= 0 && number < length / byte_samp)
 	{
 		// go to beginning of the file
 		rewind(stream);
@@ -417,4 +538,42 @@ int VoiceWriteRecognition::readSample(int number, bool leftchannel)
 		// return 0xefffffff if failed
 		return (int)0xefffffff;
 	}
+}
+
+void VoiceWriteRecognition::parseSoundPiece()
+{
+
+	short maxSample = -100;
+	short minSample = 100;
+	short sample = 0;
+	char* buf = reinterpret_cast<char*>(pWaveHdr1->lpData);
+	int pointCounter = 0;
+
+	for (int i = 0; i < INP_BUFFER_SIZE; i++)
+	{ 
+		sample = buf[i] & 0x00FF;
+
+		if (i % 20 == 0)
+		{
+			ptRecord[pointCounter + currentPicturePoint].x = i / 20 + ptRecord[currentPicturePoint].x;
+			ptRecord[pointCounter + currentPicturePoint].y = (int)((sample)* 2) + 100;
+			pointCounter++;
+		}
+
+		if (sample > maxSample)
+			maxSample = sample;
+
+		if (sample < minSample)
+			minSample = sample;
+
+		if (abs(minSample) > abs(maxSample))
+			sample = minSample;
+		else
+			sample = maxSample;
+		i++;
+	}
+
+	pointCounter--;
+	currentPicturePoint += pointCounter;
+
 }
